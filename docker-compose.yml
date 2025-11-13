@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   postgres:
+    container_name: postgres-17-alpine
     image: postgres:17-alpine
     environment:
       POSTGRES_DB: contactsdb
@@ -40,13 +41,21 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443" # HTTPS (not used in this example)
     ports:
-      - "80:80"
-      - "8081:8080"   # Optional - Traefik dashboard
+      - "80:80" # HTTP
+      - "8081:8081" # Traefik Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$3vH7mXyY$$6OZ1OfP5uDa8xv9mBtdUy/"  # <-- generated password
     restart: unless-stopped
 
 volumes:
   pgdata:
-
