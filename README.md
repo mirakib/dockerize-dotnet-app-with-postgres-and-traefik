@@ -86,7 +86,13 @@ A lightweight, production-ready CRUD web application built using `ASP.NET Core (
 
 ## Output Screenshot
 
-![alt text](image.png)
+App Screenshot:
+
+![APP Screenshot](image.png)
+
+Traefik Dashboard Screenshot:
+
+![Traefik Dashboard Screenshot](image-1.png)
 
 
 ## Contributions
